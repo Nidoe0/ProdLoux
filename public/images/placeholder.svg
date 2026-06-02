@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="200" height="200" viewBox="0 0 200 200">
+  <rect width="200" height="200" fill="#E8F5E9"/>
+  <text x="100" y="85" text-anchor="middle" font-family="Arial" font-size="48" fill="#A5D6A7">📦</text>
+  <text x="100" y="130" text-anchor="middle" font-family="Arial" font-size="13" fill="#81C784">Pas d'image</text>
+</svg>

@@ -1,0 +1,28 @@
+<svg width="1600" height="900" viewBox="0 0 1600 900" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#fff7ea"/>
+      <stop offset="100%" stop-color="#ffecd5"/>
+    </linearGradient>
+  </defs>
+  <rect width="1600" height="900" fill="url(#bg)"/>
+  <circle cx="300" cy="200" r="160" fill="#ffe6c7" opacity="0.8"/>
+  <circle cx="1300" cy="180" r="140" fill="#f5d6a0" opacity="0.7"/>
+  <rect x="220" y="300" width="460" height="320" rx="50" fill="#fffdf8" stroke="#e7c199" stroke-width="14"/>
+  <circle cx="420" cy="520" r="92" fill="#f9d7af"/>
+  <path d="M340 500C340 500 370 410 470 420C580 430 590 500 590 500" stroke="#ba7d50" stroke-width="24" stroke-linecap="round"/>
+  <path d="M380 520C380 520 400 620 490 610C560 604 610 560 610 560" stroke="#af7c56" stroke-width="22" stroke-linecap="round"/>
+  <path d="M500 320C500 320 540 290 610 300C690 310 740 360 740 360" stroke="#b07d48" stroke-width="18" stroke-linecap="round"/>
+  <path d="M350 330C350 330 390 280 450 270C540 260 620 300 620 300" stroke="#c4986c" stroke-width="18" stroke-linecap="round"/>
+  <rect x="820" y="280" width="580" height="420" rx="40" fill="#ffffff" opacity="0.85"/>
+  <path d="M930 360L1160 360" stroke="#d8ab72" stroke-width="18" stroke-linecap="round"/>
+  <path d="M930 420L1160 420" stroke="#d8ab72" stroke-width="18" stroke-linecap="round"/>
+  <path d="M930 480L1160 480" stroke="#d8ab72" stroke-width="18" stroke-linecap="round"/>
+  <path d="M930 540L1160 540" stroke="#d8ab72" stroke-width="18" stroke-linecap="round"/>
+  <path d="M930 600L1160 600" stroke="#d8ab72" stroke-width="18" stroke-linecap="round"/>
+  <text x="260" y="260" font-family="Verdana" font-size="64" fill="#b87642" font-weight="700">Vanille Locale</text>
+  <text x="260" y="340" font-family="Verdana" font-size="36" fill="#8c6243">Saveurs naturelles de Madagascar</text>
+  <path d="M1320 640C1320 640 1390 620 1440 680" stroke="#b07f5d" stroke-width="20" stroke-linecap="round"/>
+  <circle cx="1460" cy="690" r="24" fill="#f9d7af"/>
+  <circle cx="1430" cy="720" r="18" fill="#ba7d50"/>
+</svg>
