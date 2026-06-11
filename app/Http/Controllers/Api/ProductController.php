@@ -8,6 +8,7 @@ use App\Models\Product;
 use App\Models\Seller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Pagination\LengthAwarePaginator;
 
 class ProductController extends Controller
 {
@@ -29,18 +30,46 @@ class ProductController extends Controller
             $lng    = (float) $request->longitude;
             $radius = (float) ($request->radius ?? 10);
 
-            $query->selectRaw(
-                "products.*, (6371 * acos(cos(radians(?))
-                 * cos(radians(latitude))
-                 * cos(radians(longitude) - radians(?))
-                 + sin(radians(?)) * sin(radians(latitude)))) AS distance",
-                [$lat, $lng, $lat]
-            )->having('distance', '<=', $radius)->orderBy('distance');
+            // SQLite often lacks trig functions (radians, sin, cos, acos).
+            // Fall back to a bounding-box + PHP haversine filter when using sqlite.
+            if (DB::getDriverName() === 'sqlite') {
+                $deg = $radius / 111; // ~111 km per degree latitude
+                $minLat = $lat - $deg; $maxLat = $lat + $deg;
+                $minLng = $lng - $deg; $maxLng = $lng + $deg;
+
+                $candidates = $query->whereBetween('latitude', [$minLat, $maxLat])
+                                    ->whereBetween('longitude', [$minLng, $maxLng])
+                                    ->get()
+                                    ->map(function ($p) use ($lat, $lng) {
+                                        $p->distance = $this->haversineDistance($lat, $lng, (float)$p->latitude, (float)$p->longitude);
+                                        return $p;
+                                    })->filter(fn($p) => $p->distance <= $radius)
+                                      ->sortBy('distance')
+                                      ->values();
+
+                $perPage = (int) ($request->per_page ?? 20);
+                $page = (int) max(1, $request->get('page', 1));
+                $total = $candidates->count();
+                $items = $candidates->forPage($page, $perPage);
+
+                $products = new LengthAwarePaginator($items, $total, $perPage, $page, [
+                    'path' => $request->url(), 'query' => $request->query(),
+                ]);
+            } else {
+                $query->selectRaw(
+                    "products.*, (6371 * acos(cos(radians(?))
+                     * cos(radians(latitude))
+                     * cos(radians(longitude) - radians(?))
+                     + sin(radians(?)) * sin(radians(latitude)))) AS distance",
+                    [$lat, $lng, $lat]
+                )->having('distance', '<=', $radius)->orderBy('distance');
+
+                $products = $query->paginate($request->per_page ?? 20);
+            }
         } else {
             $query->latest();
+            $products = $query->paginate($request->per_page ?? 20);
         }
-
-        $products = $query->paginate($request->per_page ?? 20);
 
         // Append media URLs and avg rating
         $products->getCollection()->transform(function ($p) {
@@ -63,6 +92,19 @@ class ProductController extends Controller
         $product->reviews     = $product->reviews()->approved()->with('user:id,name')->latest()->take(10)->get();
 
         return response()->json($product);
+    }
+
+    /**
+     * Compute haversine distance (km) between two lat/lng points.
+     */
+    protected function haversineDistance(float $lat1, float $lon1, float $lat2, float $lon2): float
+    {
+        $earthRadius = 6371; // km
+        $dLat = deg2rad($lat2 - $lat1);
+        $dLon = deg2rad($lon2 - $lon1);
+        $a = sin($dLat / 2) * sin($dLat / 2) + cos(deg2rad($lat1)) * cos(deg2rad($lat2)) * sin($dLon / 2) * sin($dLon / 2);
+        $c = 2 * atan2(sqrt($a), sqrt(1 - $a));
+        return $earthRadius * $c;
     }
 
     /**

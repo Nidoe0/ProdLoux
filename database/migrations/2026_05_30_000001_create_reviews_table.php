@@ -14,7 +14,7 @@ return new class extends Migration {
             $table->foreignId('order_id')->nullable()->constrained()->onDelete('set null');
             $table->unsignedTinyInteger('rating')->default(5); // 1-5
             $table->text('body')->nullable();
-            $table->enum('status', ['pending', 'approved', 'rejected'])->default('pending');
+            $table->enum('status', ['pending', 'approved', 'rejected', 'flagged'])->default('pending');
             $table->boolean('flagged')->default(false);
             $table->text('flag_reason')->nullable();
             $table->timestamps();
